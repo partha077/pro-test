@@ -1,0 +1,23 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - master  # This workflow will run on pushes to the master branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.8.1
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+    - name: Deploy files to EC2
+      run: |
+        scp -o StrictHostKeyChecking=no -r ./index.html ./hello-image.jpg max@3.89.232.231:/var/www/html/
